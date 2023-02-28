@@ -1,6 +1,7 @@
-# An Arduino library to wrap the Slack WebHook
+# An Arduino library to wrap the Slack Incoming WebHook
 
-This is a helper library to abstract away and favilitate Slack WebHook communication
+This is a helper library to abstract away and facilitate 
+[Slack Incoming WebHooks](https://api.slack.com/legacy/custom-integrations/messaging/webhooks)
 
 ```cpp
 #include <Arduino.h>

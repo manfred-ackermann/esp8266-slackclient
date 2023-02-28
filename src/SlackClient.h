@@ -43,6 +43,7 @@ class SlackClient {
     const char* _username  = "";
     const char* _channel   = "";
     Client *_client;
+    bool _enabled;
     
     int status();
     void skip();
@@ -86,6 +87,23 @@ class SlackClient {
      */
     void setChannel(const char* channel);
 
+    /**
+     * Option to enable communication to Slack.
+     */
+    void enable();
+
+    /**
+     * Option to disable communication to Slack. All 
+     * communication will be supressed.
+     */
+    void disable();
+
+    /**
+     * Option to enable communication to Slack.
+     * 
+     * @return true if enabled, false otherwise.
+     */
+    bool isEnabled();
 };
 
 #endif

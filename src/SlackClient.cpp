@@ -11,9 +11,11 @@
 SlackClient::SlackClient(Client &client, const char* slackWebhook) {
   this->_slackWebhook = slackWebhook;
   this->_client = &client;
+  this->_enabled = true;
 }
 
 int SlackClient::sendMessage(const char* message) {
+  if(!_enabled) return -1;
   // strlen(", \"icon_emoji\": \"\"") = 18
   size_t len_iconEmoji = strlen(this->_iconEmoji) == 0 ? 0 : strlen(this->_iconEmoji) + 18;
   // strlen(", \"username\": \"\") = 16
@@ -112,4 +114,16 @@ void SlackClient::close()
     SLACK_DEBUG_SERIAL_LN(F("SlackClient Closing client"));
     _client->stop();
   }
+}
+
+void SlackClient::enable() {
+  this->_enabled = true;
+}
+
+void SlackClient::disable() {
+  this->_enabled = false;
+}
+
+bool SlackClient::isEnabled() {
+  return this->_enabled;
 }
