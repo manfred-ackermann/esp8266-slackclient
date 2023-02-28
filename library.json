@@ -1,6 +1,6 @@
 {
   "name": "SlackClient",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "An Arduino library to wrap the Slack WebHook",
   "keywords": "esp8266, slack, webhook, communication",
   "repository":
