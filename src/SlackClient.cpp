@@ -1,63 +1,73 @@
 /**
  * Copyright (c) 2023 Manfred Ackermann. All right reserved.
- * 
+ *
  * SlackClient - An Arduino library to wrap the Slack WebHook for easy use.
- * 
+ *
  * MIT License
  **/
 
 #include "SlackClient.h"
 
-SlackClient::SlackClient(Client &client, const char* slackWebhook) {
+SlackClient::SlackClient(Client &client, const char *slackWebhook)
+{
   this->_slackWebhook = slackWebhook;
   this->_client = &client;
   this->_enabled = true;
   this->_option_link_names = false;
 }
 
-int SlackClient::sendMessage(const char* message) {
-  if(!_enabled) return -1;
+int SlackClient::sendMessage(const char *message)
+{
+  if (!_enabled)
+    return -1;
 
   // strlen(", \"icon_emoji\": \"\"") = 18
   size_t len_iconEmoji = strlen(this->_iconEmoji) == 0 ? 0 : strlen(this->_iconEmoji) + 18;
 
   // strlen(", \"username\": \"\"") = 16
-  size_t len_username  = strlen(this->_username ) == 0 ? 0 : strlen(this->_username ) + 16;
+  size_t len_username = strlen(this->_username) == 0 ? 0 : strlen(this->_username) + 16;
 
   // strlen(", \"channel\": \"\"") = 15
-  size_t len_channel   = strlen(this->_channel  ) == 0 ? 0 : strlen(this->_channel ) + 16;
+  size_t len_channel = strlen(this->_channel) == 0 ? 0 : strlen(this->_channel) + 16;
 
   // strlen(", \"link_names\": true") = 20
   size_t len_option_link_names = this->_option_link_names ? 20 : 0;
 
-  // strlen("{\"text\": \"\"}") = 12  
-  char* payload = (char*) malloc((12+strlen(message)+len_iconEmoji+len_username+len_channel+len_option_link_names+1)*sizeof(char));
+  // strlen("{\"text\": \"\"}") = 12
+  char *payload = (char *)malloc((12 + strlen(message) + len_iconEmoji + len_username + len_channel + len_option_link_names + 1) * sizeof(char));
 
-  strcpy(payload, "{\"text\": \"" );
-  strcat(payload, message );
-  if(len_iconEmoji) { // add if icon_emoji is set
-    strcat(payload, "\", \"icon_emoji\": \"" );
-    strcat(payload, this->_iconEmoji );
+  strcpy(payload, "{\"text\": \"");
+  strcat(payload, message);
+  if (len_iconEmoji)
+  { // add if icon_emoji is set
+    strcat(payload, "\", \"icon_emoji\": \"");
+    strcat(payload, this->_iconEmoji);
   }
-  if(len_username) { // add if username is set
-    strcat(payload, "\", \"username\": \"" );
-    strcat(payload, this->_username );
+  if (len_username)
+  { // add if username is set
+    strcat(payload, "\", \"username\": \"");
+    strcat(payload, this->_username);
   }
-  if(len_channel) { // add if channel is set
-    strcat(payload, "\", \"channel\": \"" );
-    strcat(payload, this->_channel );
+  if (len_channel)
+  { // add if channel is set
+    strcat(payload, "\", \"channel\": \"");
+    strcat(payload, this->_channel);
   }
-  if(this->_option_link_names) { // add ', "link_names": true'
-    strcat(payload, "\", \"link_names\": true}" );
-  } else {
-    strcat(payload, "\"}" );
+  if (this->_option_link_names)
+  { // add ', "link_names": true'
+    strcat(payload, "\", \"link_names\": true}");
+  }
+  else
+  {
+    strcat(payload, "\"}");
   }
 
   _client->flush();
   _client->setTimeout(SLACK_TIMEOUT);
-  if (!_client->connect(SLACK_HOST, 443)) {
-      SLACK_SERIAL_LN(F("SlackClient Connection failed"));
-      return -1;
+  if (!_client->connect(SLACK_HOST, 443))
+  {
+    SLACK_SERIAL_LN(F("SlackClient Connection failed"));
+    return -1;
   }
   // give the watchdog a hint
   yield();
@@ -67,7 +77,7 @@ int SlackClient::sendMessage(const char* message) {
   _client->print(this->_slackWebhook);
   _client->println(F(" HTTP/1.1"));
 
-  //Headers
+  // Headers
   _client->print(F("Host: "));
   _client->println(SLACK_HOST);
 
@@ -83,7 +93,8 @@ int SlackClient::sendMessage(const char* message) {
   _client->println();
   _client->print(payload);
 
-  if (_client->println() == 0) {
+  if (_client->println() == 0)
+  {
     SLACK_SERIAL_LN(F("SlackClient Failed to send request"));
     return false;
   }
@@ -91,15 +102,18 @@ int SlackClient::sendMessage(const char* message) {
   return status();
 }
 
-void SlackClient::setUsername(const char* username) {
+void SlackClient::setUsername(const char *username)
+{
   this->_username = username;
 }
 
-void SlackClient::setIconEmoji(const char* iconEmoji) {
+void SlackClient::setIconEmoji(const char *iconEmoji)
+{
   this->_iconEmoji = iconEmoji;
 }
 
-void SlackClient::setChannel(const char* channel) {
+void SlackClient::setChannel(const char *channel)
+{
   this->_channel = channel;
 }
 
@@ -127,18 +141,22 @@ void SlackClient::close()
   }
 }
 
-void SlackClient::linkNames(boolean enable) {
+void SlackClient::linkNames(boolean enable)
+{
   this->_option_link_names = enable;
 }
 
-void SlackClient::enable() {
+void SlackClient::enable()
+{
   this->_enabled = true;
 }
 
-void SlackClient::disable() {
+void SlackClient::disable()
+{
   this->_enabled = false;
 }
 
-bool SlackClient::isEnabled() {
+bool SlackClient::isEnabled()
+{
   return this->_enabled;
 }

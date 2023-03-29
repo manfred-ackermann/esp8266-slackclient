@@ -1,8 +1,8 @@
 /**
  * Copyright (c) 2023 Manfred Ackermann. All right reserved.
- * 
+ *
  * SlackClient - An Arduino library to wrap the Slack WebHook
- * 
+ *
  * MIT License
  **/
 
@@ -14,8 +14,8 @@
 
 #define SLACK_ENABLE_SERIAL
 
-//un-mark the following line to enable debug mode
-//#define SLACK_ENABLE_DEBUG
+// un-mark the following line to enable debug mode
+// #define SLACK_ENABLE_DEBUG
 
 #ifdef SLACK_ENABLE_SERIAL
 #define SLACK_SERIAL(STR) Serial.print(STR)
@@ -36,81 +36,82 @@
 #define SLACK_HOST "hooks.slack.com"
 #define SLACK_TIMEOUT 2000
 
-class SlackClient {
-  private:
-    const char* _slackWebhook;
-    const char* _iconEmoji = "";
-    const char* _username  = "";
-    const char* _channel   = "";
-    Client *_client;
-    bool _enabled;
-    bool _option_link_names;
-    
-    int status();
-    void close();
+class SlackClient
+{
+private:
+  const char *_slackWebhook;
+  const char *_iconEmoji = "";
+  const char *_username = "";
+  const char *_channel = "";
+  Client *_client;
+  bool _enabled;
+  bool _option_link_names;
 
-  public:
-    /**
-     * Constructor
-     * 
-     * @param client WiFiClientSecure class.
-     * @param slackWebhook Slack WebHook URL. E.g. AAAA/BBBB/CCCC
-     */
-    SlackClient(Client &client, const char* slackWebhook);
+  int status();
+  void close();
 
-    /**
-     * Sends a message to the channel.
-     * 
-     * @param message The text to be send as message.
-     * @return Returns HTTP response code (e.g. HTTP_CODE_OK) or -1 if connection failed.
-     */
-    int sendMessage(const char* message);
+public:
+  /**
+   * Constructor
+   *
+   * @param client WiFiClientSecure class.
+   * @param slackWebhook Slack WebHook URL. E.g. AAAA/BBBB/CCCC
+   */
+  SlackClient(Client &client, const char *slackWebhook);
 
-    /**
-     * Override the legacy integration's default name.
-     * 
-     * @param username The username to appear as message sender.
-     */
-    void setUsername(const char* username);
+  /**
+   * Sends a message to the channel.
+   *
+   * @param message The text to be send as message.
+   * @return Returns HTTP response code (e.g. HTTP_CODE_OK) or -1 if connection failed.
+   */
+  int sendMessage(const char *message);
 
-    /**
-     * Override the legacy integration's default icon_emoji.
-     * 
-     * @param iconEmoji The emoji code string to use in place of the default icon, such as :envelope:.
-     */
-    void setIconEmoji(const char* iconEmoji);
+  /**
+   * Override the legacy integration's default name.
+   *
+   * @param username The username to appear as message sender.
+   */
+  void setUsername(const char *username);
 
-    /**
-     * Override the legacy integration's default channel.
-     * 
-     * @param channel This should be an ID, such as C8UJ12P4P.
-     */
-    void setChannel(const char* channel);
+  /**
+   * Override the legacy integration's default icon_emoji.
+   *
+   * @param iconEmoji The emoji code string to use in place of the default icon, such as :envelope:.
+   */
+  void setIconEmoji(const char *iconEmoji);
 
-    /**
-     * Enable/Disable link_names option. Default is disabled.
-     *
-     * @param enable True to enabled, false to disable.
-     */
-    void linkNames(boolean enable);
+  /**
+   * Override the legacy integration's default channel.
+   *
+   * @param channel This should be an ID, such as C8UJ12P4P.
+   */
+  void setChannel(const char *channel);
 
-    /**
-     * Option to enable communication to Slack.
-     */
-    void enable();
+  /**
+   * Enable/Disable link_names option. Default is disabled.
+   *
+   * @param enable True to enabled, false to disable.
+   */
+  void linkNames(boolean enable);
 
-    /**
-     * Option to disable communication to Slack. All 
-     * communication will be supressed.
-     */
-    void disable();
+  /**
+   * Option to enable communication to Slack.
+   */
+  void enable();
 
-    /**
-     * Option to enable communication to Slack.
-     * 
-     * @return true if enabled, false otherwise.
-     */
-    bool isEnabled();
+  /**
+   * Option to disable communication to Slack. All
+   * communication will be supressed.
+   */
+  void disable();
+
+  /**
+   * Option to enable communication to Slack.
+   *
+   * @return true if enabled, false otherwise.
+   */
+  bool isEnabled();
 };
 
 #endif
