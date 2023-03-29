@@ -14,7 +14,7 @@
 
 #define SLACK_ENABLE_SERIAL
 
-//un-mark following line to enable debug mode
+//un-mark the following line to enable debug mode
 //#define SLACK_ENABLE_DEBUG
 
 #ifdef SLACK_ENABLE_SERIAL

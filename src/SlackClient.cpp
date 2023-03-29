@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2023 Manfred Ackermann. All right reserved.
  * 
- * SlackClient - An Arduino library to wrap the Slack WebHook
+ * SlackClient - An Arduino library to wrap the Slack WebHook for easy use.
  * 
  * MIT License
  **/
