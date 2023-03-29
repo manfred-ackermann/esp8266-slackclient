@@ -44,9 +44,9 @@ class SlackClient {
     const char* _channel   = "";
     Client *_client;
     bool _enabled;
+    bool _option_link_names;
     
     int status();
-    void skip();
     void close();
 
   public:
@@ -86,6 +86,13 @@ class SlackClient {
      * @param channel This should be an ID, such as C8UJ12P4P.
      */
     void setChannel(const char* channel);
+
+    /**
+     * Enable/Disable link_names option. Default is disabled.
+     *
+     * @param enable True to enabled, false to disable.
+     */
+    void linkNames(boolean enable);
 
     /**
      * Option to enable communication to Slack.
