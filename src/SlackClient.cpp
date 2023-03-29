@@ -12,19 +12,26 @@ SlackClient::SlackClient(Client &client, const char* slackWebhook) {
   this->_slackWebhook = slackWebhook;
   this->_client = &client;
   this->_enabled = true;
+  this->_option_link_names = false;
 }
 
 int SlackClient::sendMessage(const char* message) {
   if(!_enabled) return -1;
+
   // strlen(", \"icon_emoji\": \"\"") = 18
   size_t len_iconEmoji = strlen(this->_iconEmoji) == 0 ? 0 : strlen(this->_iconEmoji) + 18;
-  // strlen(", \"username\": \"\") = 16
+
+  // strlen(", \"username\": \"\"") = 16
   size_t len_username  = strlen(this->_username ) == 0 ? 0 : strlen(this->_username ) + 16;
-  // strlen(", \"channel\": \"\") = 15
+
+  // strlen(", \"channel\": \"\"") = 15
   size_t len_channel   = strlen(this->_channel  ) == 0 ? 0 : strlen(this->_channel ) + 16;
-  
+
+  // strlen(", \"link_names\": true") = 20
+  size_t len_option_link_names = this->_option_link_names ? 20 : 0;
+
   // strlen("{\"text\": \"\"}") = 12  
-  char* payload = (char*) malloc((12+strlen(message)+len_iconEmoji+len_username+len_channel+1)*sizeof(char));
+  char* payload = (char*) malloc((12+strlen(message)+len_iconEmoji+len_username+len_channel+len_option_link_names+1)*sizeof(char));
 
   strcpy(payload, "{\"text\": \"" );
   strcat(payload, message );
@@ -40,7 +47,11 @@ int SlackClient::sendMessage(const char* message) {
     strcat(payload, "\", \"channel\": \"" );
     strcat(payload, this->_channel );
   }
-  strcat(payload, "\"}" );
+  if(this->_option_link_names) { // add ', "link_names": true'
+    strcat(payload, "\", \"link_names\": true}" );
+  } else {
+    strcat(payload, "\"}" );
+  }
 
   _client->flush();
   _client->setTimeout(SLACK_TIMEOUT);
@@ -114,6 +125,10 @@ void SlackClient::close()
     SLACK_DEBUG_SERIAL_LN(F("SlackClient Closing client"));
     _client->stop();
   }
+}
+
+void SlackClient::linkNames(boolean enable) {
+  this->_option_link_names = enable;
 }
 
 void SlackClient::enable() {
